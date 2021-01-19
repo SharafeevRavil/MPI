@@ -29,6 +29,22 @@ void FillEdges(double **temperature, int xCount, int yCount, double xStart, doub
     }
 }
 
+double* GetXStartArray(int yCount){
+    double* array = new double [yCount];
+    for (int j = 0; j < yCount; j++) {
+        array[j] = 600;
+    }
+    return array;
+}
+
+double* GetXEndArray(int yCount){
+    double* array = new double [yCount];
+    for (int j = 0; j < yCount; j++) {
+        array[j] = 1200;
+    }
+    return array;
+}
+
 void PrintMatrix(double **temperature, int xCount, int yCount) {
     for (int j = yCount - 1; j >= 0; j--) {
         for (int i = 0; i < xCount; i++) {
@@ -56,6 +72,11 @@ void RunFinal86Task() {
     yCount++;
 
     //program start
+
+    double* xStartArray = GetXStartArray(yCount);
+    double* xEndArray = GetXEndArray(yCount);
+
+    //fill matrix
     double **temperature = new double *[xCount]; // NOLINT(modernize-use-auto)
     for (int i = 0; i < xCount; i++) {
         temperature[i] = new double[yCount];
@@ -63,5 +84,16 @@ void RunFinal86Task() {
     FillStart(temperature, xCount, yCount);
     FillEdges(temperature, xCount, yCount, xStart, xStep);
 
-    PrintMatrix(temperature, xCount, yCount);
+    //PrintMatrix(temperature, xCount, yCount);
+
+    //calculate
+    double currentTime = tStart;
+    while(currentTime < tEnd){
+        currentTime+= tStep;
+        //в направлении x
+        for (int j = 0; j < yCount; j++) {
+
+        }
+        //в направлении y
+    }
 }
