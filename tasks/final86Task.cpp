@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <math.h>
 using namespace std;
 
 void FillStart(double **temperature, int xCount, int yCount) {
@@ -54,6 +54,21 @@ void PrintMatrix(double **temperature, int xCount, int yCount) {
     }
 }
 
+void GetLambda(int x, int y) {
+    if (x >= 0.25 && x <= 0.65 && y >= 0.1 && y <= 0.25)
+        return (1 / 10) / 10;
+    else return (((1 / 10) / 10) / 10) / 10;
+}
+
+void GetHalfedLambda(double x, double y) {
+    if (x % 1 != 0) {
+        return (GetLambda(ceil(x), y) + GetLambda(floor(x), y) / 2;  
+    }
+    else{
+        return (GetLambda(x, ceil(y)) + GetLambda(x, floor(y)) / 2;
+    }
+}
+
 void RunFinal86Task() {
     //input
     double xStart = 0;
@@ -70,7 +85,8 @@ void RunFinal86Task() {
     double tStep = min(xStep, yStep);//tau
     xCount++;
     yCount++;
-
+    double* alphaArr = double[max(xCount, yCount)+1];
+    double* betaArr = double[max(xCount, yCount)+1];
     //program start
 
     double* xStartArray = GetXStartArray(yCount);
@@ -78,8 +94,13 @@ void RunFinal86Task() {
 
     //fill matrix
     double **temperature = new double *[xCount]; // NOLINT(modernize-use-auto)
+
+    double **temperaturePlusHalf = new double *[xCount]; // NOLINT(modernize-use-auto)
+    double **temperaturePlusOne = new double *[xCount]; // NOLINT(modernize-use-auto)
     for (int i = 0; i < xCount; i++) {
         temperature[i] = new double[yCount];
+        temperaturePlusHalf[i] = new double[yCount];
+        temperaturePlusOne[i] = new double[yCount];
     }
     FillStart(temperature, xCount, yCount);
     FillEdges(temperature, xCount, yCount, xStart, xStep);
@@ -91,8 +112,21 @@ void RunFinal86Task() {
     while(currentTime < tEnd){
         currentTime+= tStep;
         //в направлении x
-        for (int j = 0; j < yCount; j++) {
-
+        for (int j = 1; j < yCount+1; j++) { //как на паскале
+            alphaArr[1] = 0.0;
+            betaArr[1] = xEndArray[j];
+            for (int i = 2; i < xCount; i++) {
+                A = -(GetHalfedLambda(i - 1 / 2, j)) / (2 * yStep * yStep);
+                B = -(GetHalfedLambda(i , j + 1 / 2)) / (2 * yStep * yStep);
+                C = (1 / tStep) - A - B;
+                F = (temperature[i][j] / tStep) +
+                    (
+                        GetHalfedLambda(i, j + 0.5) * (temperature[i][j + 1] - temperature[i][j]) -
+                        GetHalfedLambda(i, j - 0.5) * (temperature[i][j] - temperature[i][j - 1])
+                    ) 
+                    /
+                    (2 * yStep * yStep);
+            }
         }
         //в направлении y
     }
